@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Show CAPTCHA</title>
+    <script>
+        var startTime; // Declare startTime to record the time when the page is fully loaded
+
+        // Function to set the startTime; it is called when the page loads
+        function startTimer() {
+            startTime = Date.now();
+        }
+
+        // Function to calculate time taken when the form is submitted
+        function calculateTimeTaken() {
+            var endTime = Date.now();
+            var timeTaken = (endTime - startTime) / 1000; // Convert to seconds
+            document.getElementById('timeTaken').value = timeTaken;
+        }
+
+        // Set the startTime as soon as the window loads
+        window.onload = startTimer;
+
+        // Ensure that the time calculation is done right before form submission
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.getElementById('captchaForm').onsubmit = calculateTimeTaken;
+        });
+        function setEndTime() {
+            var endTimeField = document.getElementById('end_time');
+            if (endTimeField) {
+                endTimeField.value = new Date().toISOString(); // ISO format for consistent backend processing
+            }
+        }
+    </script>
+</head>
+<body>
+    <form action="{{ url_for('verify_captcha') }}" method="post" onsubmit="setEndTime()">
+        <img src="data:image/png;base64,{{ captcha_image }}" alt="CAPTCHA">
+        <input type="text" name="captcha_response" placeholder="Enter CAPTCHA here">
+        <input type="hidden" name="time_taken" value="0"> <!-- This should be dynamically set if you are tracking time taken -->
+        <input type="hidden" name="captcha_type" value="exampleType"> <!-- Replace exampleType with actual captcha type -->
+        <!-- Hidden field to capture the end time -->
+        <input type="hidden" id="end_time" name="end_time" value="">
+        <input type="submit" value="Verify">
+    </form>
+</body>
+</html>

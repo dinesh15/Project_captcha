@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CAPTCHA Verification</title>
+<script>
+var startTime = Date.now();
+
+function setTimeTaken() {
+    var endTime = Date.now();
+    var timeTakenField = document.getElementById('timeTaken');
+    timeTakenField.value = endTime - startTime;
+}
+
+// You will need to determine the actual captcha type and set it as needed
+// This is just an example, and you should replace 'example_type' with the actual type or a method to determine it.
+var captchaType = 'example_type'; 
+
+</script>
+</head>
+<body>
+
+<!-- The src of the img tag will be set dynamically when the page is served by Flask -->
+<img src="data:image/png;base64,{{ captcha_image }}" alt="CAPTCHA Image" />
+
+<form method="POST" action="/verify_captcha" onsubmit="setTimeTaken()">
+    <input type="hidden" id="timeTaken" name="time_taken" value="" /> <!-- The JavaScript function will set this value on form submit -->
+    <input type="hidden" name="captcha_type" value="example_type" /> <!-- Replace 'example_type' with your actual captcha type -->
+    <input type="text" name="captcha_response" placeholder="Enter CAPTCHA here" />
+    <button type="submit">Verify Captcha</button>
+</form>
+
+</body>
+</html>

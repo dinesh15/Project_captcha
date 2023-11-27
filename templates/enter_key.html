@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enter Unique Key</title>
+</head>
+<body>
+    <form method="POST" action="{{ url_for('enter_key') }}">
+        <label for="unique_key">Enter your unique key:</label>
+        <input type="text" id="unique_key" name="unique_key" required>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
