@@ -3,18 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <title>Start CAPTCHA Test</title>
+<!-- Load the reCAPTCHA enterprise script with your site key -->
+<script src="https://www.google.com/recaptcha/enterprise.js?render=6LdHzQ8pAAAAAJ-xu-QslvYliAQVQYBj9csMmyzn"></script>
 <script>
 var startTime;
 
 function startTest() {
     startTime = Date.now(); // Capture the start time when the captcha is displayed
+    grecaptcha.enterprise.ready(function() {
+        grecaptcha.enterprise.execute('YOUR_SITE_KEY', {action: 'homepage'}).then(function(token) {
+            document.getElementById('recaptchaResponse').value = token; // Store the reCAPTCHA response token in the hidden input
+        });
+    });
 }
 
 function submitCaptchaForm() {
     var endTime = Date.now(); // Capture the end time when the form is submitted
     var timeTaken = (endTime - startTime) / 1000; // Calculate time taken in seconds
     document.getElementById('timeTaken').value = timeTaken; // Set the calculated time taken in the hidden field
-
     // Now submit the form with the calculated time
     document.getElementById('captchaForm').submit();
 }
@@ -22,14 +28,13 @@ function submitCaptchaForm() {
 window.onload = startTest;
 </script>
 </head>
-<body onload="startTest()">
-
-<img src="data:image/png;base64,{{ captcha_image }}" alt="CAPTCHA Image" />
+<body>
 
 <form id="captchaForm" method="POST" action="/verify_captcha" onsubmit="submitCaptchaForm(); return false;">
+    <!-- reCAPTCHA response token -->
+    <input type="hidden" id="recaptchaResponse" name="recaptcha_response" />
     <input type="hidden" id="timeTaken" name="time_taken" value="" />
     <input type="hidden" name="captcha_type" value="{{ captcha_type }}" />
-    <input type="text" name="captcha_response" placeholder="Enter CAPTCHA here" />
     <button type="submit">Verify Captcha</button>
 </form>
 

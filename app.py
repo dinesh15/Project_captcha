@@ -9,12 +9,17 @@ import base64
 import os
 from uuid import uuid4
 from flask_migrate import Migrate
+from flask_recaptcha import ReCaptcha
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:admin@localhost/mycaptchadatabase'
 app.secret_key = os.urandom(24)
 db = SQLAlchemy(app)
 app.config['DEBUG'] = True
+app.config['RECAPTCHA_SITE_KEY'] = "6LdHzQ8pAAAAAJ-xu-QslvYliAQVQYBj9csMmyzn"
+app.config['RECAPTCHA_SECRET_KEY'] = " 6LdHzQ8pAAAAAM8tJ-jyVr429s905NR9yn6aMc9g"
+
+recaptcha = ReCaptcha(app)
 
 # Set up Flask-Migrate
 migrate = Migrate(app, db)

@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Show CAPTCHA</title>
+    <!-- Load the reCAPTCHA enterprise script with your site key -->
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdHzQ8pAAAAAJ-xu-QslvYliAQVQYBj9csMmyzn"></script>
     <script>
         var startTime; // Declare startTime to record the time when the page is fully loaded
 
@@ -25,23 +27,25 @@
         document.addEventListener('DOMContentLoaded', (event) => {
             document.getElementById('captchaForm').onsubmit = calculateTimeTaken;
         });
-        function setEndTime() {
-            var endTimeField = document.getElementById('end_time');
-            if (endTimeField) {
-                endTimeField.value = new Date().toISOString(); // ISO format for consistent backend processing
-            }
+
+        function onSubmit(token) {
+            document.getElementById('recaptchaResponse').value = token;
+            document.getElementById('captchaForm').submit();
         }
     </script>
 </head>
 <body>
-    <form action="{{ url_for('verify_captcha') }}" method="post" onsubmit="setEndTime()">
-        <img src="data:image/png;base64,{{ captcha_image }}" alt="CAPTCHA">
-        <input type="text" name="captcha_response" placeholder="Enter CAPTCHA here">
-        <input type="hidden" name="time_taken" value="0"> <!-- This should be dynamically set if you are tracking time taken -->
+    <form id="captchaForm" action="{{ url_for('verify_captcha') }}" method="post">
+        <!-- reCAPTCHA widget container -->
+        <button class="g-recaptcha" 
+                data-sitekey="YOUR_SITE_KEY" 
+                data-callback="onSubmit"
+                data-action="submit">Verify CAPTCHA</button>
+        <input type="text" name="captcha_response" placeholder="Enter CAPTCHA here" style="display: none;"> <!-- Hidden as reCAPTCHA will be used -->
+        <input type="hidden" id="timeTaken" name="time_taken" value=""> <!-- This will be set by the calculateTimeTaken function -->
         <input type="hidden" name="captcha_type" value="exampleType"> <!-- Replace exampleType with actual captcha type -->
-        <!-- Hidden field to capture the end time -->
-        <input type="hidden" id="end_time" name="end_time" value="">
-        <input type="submit" value="Verify">
+        <!-- Hidden field to capture the reCAPTCHA response -->
+        <input type="hidden" id="recaptchaResponse" name="recaptcha_response">
     </form>
 </body>
 </html>
